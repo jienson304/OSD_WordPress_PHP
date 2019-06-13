@@ -29,7 +29,6 @@ function googlemap(){
 add_shortcode('map', 'googlemap');
 
 
-
 function custom_button_shortcode( $atts, $content = null ) {
    
     // shortcode attributes
@@ -78,6 +77,45 @@ function custom_button_shortcode( $atts, $content = null ) {
  
 }
 add_shortcode( 'custombutton', 'custom_button_shortcode' );
+
+
+ 
+function weather_shortcode( $atts ) {
+	$params = shortcode_atts( array( 
+		'location' => 'Singapore, SG',
+	), $atts );
+ 
+ 
+	$cache_key = 'test';
+	$forecast_str = get_transient( $cache_key );
+ 
+	// if no data in the cache
+	if ( $forecast_str === false ) {
+ 
+		// build the URL for wp_remote_get() function
+		$forecast = wp_remote_get( add_query_arg( array(
+    			'q' => $params['location'], 
+    			'APPID' => '2bc52867eb83b423f960fa880e673679', // API key here
+			'units' => 'metric' 
+		), 'http://api.openweathermap.org/data/2.5/weather' ) );
+ 
+ 
+		if ( !is_wp_error( $forecast ) && wp_remote_retrieve_response_code( $forecast ) == 200 ) {
+ 
+			$forecast = json_decode( wp_remote_retrieve_body( $forecast ) );
+			//$forecast_str = $forecast->main->temp . ' °С <img src="'.$forecast->weather[0]->icon.'.svg">';
+			$forecast_str = $forecast->main->temp . ' °С <img src="' . get_stylesheet_directory_uri() . '/weather' . $forecast->weather[0]->icon . '.png">';
+			//print_r( $forecast );			
+ 
+			set_transient( $cache_key, $forecast_str, 7200 ); // 2 hours cache
+		} else {
+			return; // you can use print_r( $forecast )
+		}
+ 
+	}
+	return $forecast_str;
+}
+add_shortcode( 'weather', 'weather_shortcode' );
 
 
 if ( ! function_exists( 'twentynineteen_setup' ) ) :
