@@ -29,6 +29,57 @@ function googlemap(){
 add_shortcode('map', 'googlemap');
 
 
+
+function custom_button_shortcode( $atts, $content = null ) {
+   
+    // shortcode attributes
+    extract( shortcode_atts( array(
+        'url'    => 'http://www.facebook.com',
+        'title'  => 'Facebook',
+        'target' => 'Like',
+        'text'   => '<img src="https://cdn4.iconfinder.com/data/icons/social-media-icons-the-circle-set/48/facebook_circle-512.png" width=50 height=50>',
+    ), $atts ) );
+ 
+    $content = $text ? $text : $content;
+ 
+    // Returns the button with a link
+    if ( $url ) {
+ 
+        $link_attr = array(
+            'href'   => esc_url( $url ),
+            'title'  => esc_attr( $title ),
+            'target' => ( 'blank' == $target ) ? '_blank' : '',
+            'class'  => 'custombutton'
+        );
+ 
+        $link_attrs_str = '';
+ 
+        foreach ( $link_attr as $key => $val ) {
+ 
+            if ( $val ) {
+ 
+                $link_attrs_str .= ' ' . $key . '="' . $val . '"';
+ 
+            }
+ 
+        }
+ 
+ 
+        return '<a' . $link_attrs_str . '><span>' . do_shortcode( $content ) . '</span></a>';
+ 
+    }
+ 
+    // Return as span when no link defined
+    else {
+ 
+        return '<span class="custombutton"><span>' . do_shortcode( $content ) . '</span></span>';
+ 
+    }
+ 
+}
+add_shortcode( 'custombutton', 'custom_button_shortcode' );
+
+
 if ( ! function_exists( 'twentynineteen_setup' ) ) :
 	/**
 	 * Sets up theme defaults and registers support for various WordPress features.
