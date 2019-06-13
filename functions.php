@@ -17,6 +17,18 @@ if ( version_compare( $GLOBALS['wp_version'], '4.7', '<' ) ) {
 	return;
 }
 
+function googlemap(){
+      ob_start();
+       ?>
+        <div> <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3239.977459145636!2d139.7723633!3d35.7021723!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188c1e14ee3507%3A0xf49cde0e3bd7ed0d!2sSuehiroch%C5%8D+Sta.!5e0!3m2!1sen!2ssg!4v1559402476381!5m2!1sen!2ssg" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+       <?php
+       $output = ob_get_contents();   
+       ob_end_clean();   
+       return $output;
+}
+add_shortcode('map', 'googlemap');
+
+
 if ( ! function_exists( 'twentynineteen_setup' ) ) :
 	/**
 	 * Sets up theme defaults and registers support for various WordPress features.
